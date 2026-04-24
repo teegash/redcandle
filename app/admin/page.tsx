@@ -90,7 +90,7 @@ function ActionCard({
     <Link href={href} className="glass-panel rounded-[1.75rem] p-6 transition-transform hover:-translate-y-1">
       <h2 className="text-xl font-semibold text-white">{title}</h2>
       <p className="mt-3 text-sm leading-7 text-slate-400">{copy}</p>
-      <div className="mt-6 inline-flex items-center gap-2 text-sm font-medium text-sky-200">
+      <div className="mt-6 inline-flex items-center gap-2 text-sm font-medium text-red-200">
         Open
         <ArrowRight className="size-4" />
       </div>

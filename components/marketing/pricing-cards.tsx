@@ -50,7 +50,7 @@ export function PricingCards({ plans, email = "member@redcandle.app" }: PricingC
           <article key={plan.id} className="glass-panel flex flex-col rounded-[1.75rem] p-6">
             <div className="flex items-start justify-between gap-4">
               <div>
-                <p className="text-xs uppercase tracking-[0.24em] text-sky-200/55">
+                <p className="text-xs uppercase tracking-[0.24em] text-red-100/60">
                   {plan.name}
                 </p>
                 <h3 className="mt-3 text-3xl font-semibold tracking-[-0.04em] text-white">
@@ -58,7 +58,7 @@ export function PricingCards({ plans, email = "member@redcandle.app" }: PricingC
                 </h3>
                 <p className="mt-2 text-sm text-slate-400">per {plan.cadence}</p>
               </div>
-              <span className="pill border-sky-300/20 bg-sky-300/10 text-sky-100">
+              <span className="pill border-red-300/20 bg-red-400/10 text-red-100">
                 {plan.id === "pro" ? "Most popular" : "Premium"}
               </span>
             </div>
@@ -68,7 +68,7 @@ export function PricingCards({ plans, email = "member@redcandle.app" }: PricingC
             <ul className="space-y-3 text-sm text-slate-200">
               {plan.features.map((feature) => (
                 <li key={feature} className="flex items-center gap-3">
-                  <span className="size-2 rounded-full bg-sky-300" />
+                  <span className="size-2 rounded-full bg-red-400" />
                   {feature}
                 </li>
               ))}
