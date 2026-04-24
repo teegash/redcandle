@@ -1,0 +1,25 @@
+const env = {
+  NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
+  NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+  SUPABASE_SERVICE_ROLE_KEY: process.env.SUPABASE_SERVICE_ROLE_KEY,
+  TELEGRAM_BOT_TOKEN: process.env.TELEGRAM_BOT_TOKEN,
+  TELEGRAM_CHANNEL_ID: process.env.TELEGRAM_CHANNEL_ID,
+  PAYSTACK_PUBLIC_KEY: process.env.PAYSTACK_PUBLIC_KEY,
+  PAYSTACK_SECRET_KEY: process.env.PAYSTACK_SECRET_KEY,
+  PAYSTACK_WEBHOOK_SECRET: process.env.PAYSTACK_WEBHOOK_SECRET,
+  HEALTHCHECK_SECRET: process.env.HEALTHCHECK_SECRET,
+  CRON_SECRET: process.env.CRON_SECRET,
+  APP_URL: process.env.APP_URL ?? "http://localhost:3000",
+} as const;
+
+export const integrationStatus = {
+  supabase: Boolean(
+    env.NEXT_PUBLIC_SUPABASE_URL &&
+      env.NEXT_PUBLIC_SUPABASE_ANON_KEY &&
+      env.SUPABASE_SERVICE_ROLE_KEY,
+  ),
+  telegram: Boolean(env.TELEGRAM_BOT_TOKEN && env.TELEGRAM_CHANNEL_ID),
+  paystack: Boolean(env.PAYSTACK_PUBLIC_KEY && env.PAYSTACK_SECRET_KEY),
+};
+
+export { env };
