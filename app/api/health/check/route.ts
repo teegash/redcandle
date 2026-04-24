@@ -6,9 +6,9 @@ export const dynamic = "force-dynamic";
 
 export async function GET(request: NextRequest) {
   const authorization = request.headers.get("authorization");
-  const cronSecret = env.CRON_SECRET ?? env.HEALTHCHECK_SECRET;
+  const healthcheckSecret = env.HEALTHCHECK_SECRET;
 
-  if (cronSecret && authorization === `Bearer ${cronSecret}`) {
+  if (healthcheckSecret && authorization === `Bearer ${healthcheckSecret}`) {
     const health = await runHealthCheck();
     return NextResponse.json(health);
   }
@@ -22,9 +22,7 @@ export async function POST(request: NextRequest) {
     request.headers.get("x-healthcheck-secret") ??
     request.headers.get("authorization")?.replace(/^Bearer\s+/i, "");
 
-  const allowedSecret = env.HEALTHCHECK_SECRET ?? env.CRON_SECRET;
-
-  if (!allowedSecret || secret !== allowedSecret) {
+  if (!env.HEALTHCHECK_SECRET || secret !== env.HEALTHCHECK_SECRET) {
     return NextResponse.json({ error: "Unauthorized." }, { status: 401 });
   }
 

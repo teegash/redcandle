@@ -8,7 +8,6 @@ const env = {
   PAYSTACK_SECRET_KEY: process.env.PAYSTACK_SECRET_KEY,
   PAYSTACK_WEBHOOK_SECRET: process.env.PAYSTACK_WEBHOOK_SECRET,
   HEALTHCHECK_SECRET: process.env.HEALTHCHECK_SECRET,
-  CRON_SECRET: process.env.CRON_SECRET,
   APP_URL: process.env.APP_URL ?? "http://localhost:3000",
 } as const;
 

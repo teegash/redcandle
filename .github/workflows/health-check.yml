@@ -1,0 +1,29 @@
+name: Health check
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "*/15 * * * *"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: redcandle-health-check
+  cancel-in-progress: false
+
+jobs:
+  invoke-health-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Invoke Supabase Edge Function
+        env:
+          SUPABASE_HEALTH_FUNCTION_URL: ${{ secrets.SUPABASE_HEALTH_FUNCTION_URL }}
+          HEALTHCHECK_SECRET: ${{ secrets.HEALTHCHECK_SECRET }}
+        run: |
+          test -n "$SUPABASE_HEALTH_FUNCTION_URL"
+          test -n "$HEALTHCHECK_SECRET"
+          curl --fail --show-error --silent \
+            --request POST \
+            --header "Authorization: Bearer $HEALTHCHECK_SECRET" \
+            "$SUPABASE_HEALTH_FUNCTION_URL"

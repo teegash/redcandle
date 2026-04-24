@@ -1,6 +1,12 @@
-import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, BellRing, Bot, ChartCandlestick, ShieldCheck } from "lucide-react";
+import {
+  ArrowRight,
+  BellRing,
+  Bot,
+  ChartCandlestick,
+  RadioTower,
+  ShieldCheck,
+} from "lucide-react";
 import { Reveal } from "@/components/motion/reveal";
 import { PricingCards } from "@/components/marketing/pricing-cards";
 import { SignalCard } from "@/components/signals/signal-card";
@@ -49,29 +55,27 @@ export default async function Home() {
           </div>
 
           <div className="grid gap-4">
-            <div className="brand-frame min-h-[19rem] p-6">
-              <div className="relative flex h-full flex-col justify-between">
+            <div className="glass-panel rounded-[1.75rem] p-5">
+              <div className="flex items-start justify-between gap-4">
                 <div>
-                  <p className="brand-kicker">Brand signature</p>
-                  <h2 className="mt-4 max-w-xs text-3xl font-semibold tracking-[-0.05em] text-white">
-                    Porsche-like restraint with candle-red energy.
+                  <p className="brand-kicker">Operations</p>
+                  <h2 className="mt-3 text-2xl font-semibold text-white">
+                    Signal command center
                   </h2>
+                  <p className="mt-3 text-sm leading-7 text-slate-400">
+                    A live desk view focused on publish quality, member delivery, signal risk,
+                    and audit readiness.
+                  </p>
                 </div>
-                <div className="relative mt-6 flex items-end justify-between gap-4">
-                  <div className="max-w-[12rem] text-sm leading-7 text-stone-300/78">
-                    The supplied mark now drives the palette: lacquered reds, dark enamel blacks,
-                    and metallic neutrals.
-                  </div>
-                  <div className="relative h-48 w-48 self-end sm:h-56 sm:w-56">
-                    <Image
-                      src="https://images.pexels.com/photos/37237271/pexels-photo-37237271.png"
-                      alt="RedCandle brand mark"
-                      fill
-                      className="object-contain drop-shadow-[0_20px_40px_rgba(255,49,49,0.22)]"
-                      priority
-                    />
-                  </div>
-                </div>
+                <span className="flex size-11 items-center justify-center rounded-2xl bg-red-400/12 text-red-200">
+                  <RadioTower className="size-5" />
+                </span>
+              </div>
+              <div className="mt-6 grid gap-3 sm:grid-cols-2">
+                <OpsMetric label="Active signals" value={`${signals.filter((signal) => signal.status !== "closed").length}`} />
+                <OpsMetric label="Delivery path" value="Web + Telegram" />
+                <OpsMetric label="Risk model" value="Entry / SL / TP" />
+                <OpsMetric label="Audit layer" value="Enabled" />
               </div>
             </div>
             {[
@@ -157,6 +161,15 @@ export default async function Home() {
           <PricingCards plans={plans} />
         </section>
       </Reveal>
+    </div>
+  );
+}
+
+function OpsMetric({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="rounded-[1rem] border border-stone-300/8 bg-black/24 p-4">
+      <div className="text-xs uppercase tracking-[0.2em] text-stone-500">{label}</div>
+      <div className="mt-2 text-sm font-semibold text-white">{value}</div>
     </div>
   );
 }
