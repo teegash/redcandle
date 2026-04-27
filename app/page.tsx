@@ -7,9 +7,11 @@ import {
   RadioTower,
   ShieldCheck,
 } from "lucide-react";
+import { MarketPulseHeader } from "@/components/market/market-pulse-header";
 import { Reveal } from "@/components/motion/reveal";
 import { PricingCards } from "@/components/marketing/pricing-cards";
 import { SignalCard } from "@/components/signals/signal-card";
+import { RiskDisclaimer } from "@/components/ui/risk-disclaimer";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { getAnalytics, getPricingPlans, getProductStatus, listSignals } from "@/lib/data";
 import { percent, signed } from "@/lib/utils";
@@ -22,34 +24,37 @@ export default async function Home() {
     getProductStatus(),
   ]);
 
+  const activeSignals = signals.filter((signal) => signal.status === "open").length;
+  const pendingSignals = signals.filter((signal) => signal.status === "pending").length;
+
   return (
     <div className="space-y-14 py-8 sm:space-y-20 sm:py-10">
       <Reveal>
         <section className="grid gap-6 lg:grid-cols-[1.05fr_0.95fr]">
           <div className="glass-panel relative overflow-hidden rounded-[2rem] p-8 sm:p-10">
             <div className="pointer-events-none absolute -right-24 top-0 h-56 w-56 rounded-full bg-red-500/12 blur-3xl" />
-            <span className="eyebrow">Performance Signal Intelligence</span>
+            <span className="eyebrow">Market Intelligence Dashboard</span>
             <h1 className="display-title mt-6 max-w-4xl text-white">
-              Precision-bred signal UX with a black-red grand touring edge.
+              Risk-defined forex signals, session context, and verified delivery from one desk.
             </h1>
             <p className="subtle-copy mt-6 max-w-2xl text-lg leading-8">
-              RedCandle now leans into a motorsport luxury mood: graphite surfaces, metallic type,
-              strategic red illumination, and a premium delivery stack across web, admin, and
-              Telegram.
+              RedCandle is built as a serious signal operations platform: disciplined member
+              delivery, transparent pip analytics, clear invalidation, and a premium execution
+              surface across web, admin, and Telegram.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <Link href="/signals" className="premium-button premium-button-primary">
-                Explore the signal desk
+                Open signal feed
                 <ArrowRight className="size-4" />
               </Link>
-              <Link href="/pricing" className="premium-button premium-button-secondary">
-                View pricing
+              <Link href="/analytics" className="premium-button premium-button-secondary">
+                Review performance
               </Link>
             </div>
             <div className="stat-grid mt-10">
               <HeroStat label="Environment" value={status.environment.toUpperCase()} />
-              <HeroStat label="Win rate" value={percent(analytics.winRate)} />
-              <HeroStat label="Net pips" value={`${signed(analytics.netPips)} pips`} />
+              <HeroStat label="Closed-trade win rate" value={percent(analytics.winRate)} />
+              <HeroStat label="Net realized pips" value={`${signed(analytics.netPips)} pips`} />
               <HeroStat label="Profit factor" value={analytics.profitFactor.toFixed(2)} />
             </div>
           </div>
@@ -58,13 +63,13 @@ export default async function Home() {
             <div className="glass-panel rounded-[1.75rem] p-5">
               <div className="flex items-start justify-between gap-4">
                 <div>
-                  <p className="brand-kicker">Operations</p>
+                  <p className="brand-kicker">Control Surface</p>
                   <h2 className="mt-3 text-2xl font-semibold text-white">
-                    Signal command center
+                    Enterprise-grade signal command center
                   </h2>
                   <p className="mt-3 text-sm leading-7 text-slate-400">
-                    A live desk view focused on publish quality, member delivery, signal risk,
-                    and audit readiness.
+                    Create, validate, distribute, and audit analyst-led signals with a clean
+                    operational path from desk entry to member delivery.
                   </p>
                 </div>
                 <span className="flex size-11 items-center justify-center rounded-2xl bg-red-400/12 text-red-200">
@@ -72,32 +77,32 @@ export default async function Home() {
                 </span>
               </div>
               <div className="mt-6 grid gap-3 sm:grid-cols-2">
-                <OpsMetric label="Active signals" value={`${signals.filter((signal) => signal.status !== "closed").length}`} />
-                <OpsMetric label="Delivery path" value="Web + Telegram" />
-                <OpsMetric label="Risk model" value="Entry / SL / TP" />
-                <OpsMetric label="Audit layer" value="Enabled" />
+                <OpsMetric label="Active signals" value={`${activeSignals}`} />
+                <OpsMetric label="Pending setups" value={`${pendingSignals}`} />
+                <OpsMetric label="Distribution path" value="Web + Telegram" />
+                <OpsMetric label="Audit posture" value="Tracked" />
               </div>
             </div>
             {[
               {
                 icon: Bot,
-                title: "Telegram-first distribution",
-                copy: "Publish once in the app and distribute cleanly to your channel with audit-friendly routing.",
+                title: "Telegram channel routing",
+                copy: "Publish once in-app, then distribute to the channel with server-side formatting, logging, and retry-aware operations.",
               },
               {
                 icon: ChartCandlestick,
-                title: "Pip analytics with integrity",
-                copy: "Single-TP trade logic, expectancy, drawdown, Sharpe, and symbol-level breakdowns.",
+                title: "Performance verified from closed signals",
+                copy: "Expectancy, drawdown, profit factor, and symbol-level performance stay grounded in closed outcomes instead of vanity metrics.",
               },
               {
                 icon: ShieldCheck,
-                title: "Operational health and billing",
-                copy: "Track platform health, Paystack readiness, subscription status, and delivery confidence.",
+                title: "Operational health visibility",
+                copy: "Supabase, billing, Telegram, and app health can be surfaced in one monitoring layer for members and admins.",
               },
               {
                 icon: BellRing,
                 title: "Premium member experience",
-                copy: "Dense but calm information design tuned for mobile-first scanning and low-noise action.",
+                copy: "Dense but calm layouts help traders scan quickly without losing risk context, invalidation, or timing clarity.",
               },
             ].map(({ icon: Icon, title, copy }) => (
               <div key={title} className="glass-panel rounded-[1.75rem] p-5">
@@ -112,12 +117,22 @@ export default async function Home() {
         </section>
       </Reveal>
 
-      <Reveal delay={0.1}>
+      <Reveal delay={0.08}>
+        <MarketPulseHeader
+          session="London / New York Overlap"
+          volatility="Elevated"
+          activeSignals={activeSignals}
+          pendingSignals={pendingSignals}
+          environment={status.environment}
+        />
+      </Reveal>
+
+      <Reveal delay={0.12}>
         <section className="space-y-6">
           <SectionHeading
             eyebrow="Signal Preview"
-            title="Today's desk is built for trust, not noise."
-            description="Each signal is compact, scan-ready, and designed to carry the same clean shape across dashboard, detail view, and Telegram."
+            title="Live and pending setups designed for fast, risk-aware scanning."
+            description="Every signal surfaces direction, trade structure, pip outcome, invalidation, and data freshness without forcing traders to open a detail page just to understand the setup."
           />
           <div className="signal-grid">
             {signals.slice(0, 3).map((signal) => (
@@ -127,25 +142,25 @@ export default async function Home() {
         </section>
       </Reveal>
 
-      <Reveal delay={0.15}>
+      <Reveal delay={0.16}>
         <section className="glass-panel rounded-[2rem] p-8 sm:p-10">
           <SectionHeading
-            eyebrow="Why It Feels Different"
-            title="A dark pro interface with a disciplined product spine."
-            description="The front-end is intentionally premium, but it stays honest to the operational core: fast scanning, low-friction admin publishing, and measurable signal quality."
+            eyebrow="Product Standard"
+            title="Built to feel credible under real trading pressure."
+            description="The product language, data hierarchy, and layout choices prioritize trust: risk first, transparent performance, live delivery state, and zero hype-led clutter."
           />
           <div className="mt-8 grid gap-4 md:grid-cols-3">
             <WhyCard
-              title="Compact hierarchy"
-              copy="Tight card systems, strong typography, and very little dead space."
+              title="Structured market language"
+              copy="Signals reference session flow, confirmation, invalidation, and disciplined risk instead of vague profit-first copy."
             />
             <WhyCard
-              title="Useful motion"
-              copy="GSAP-driven reveals and transitions that support continuity instead of distracting from execution."
+              title="Useful motion only"
+              copy="GSAP-driven reveals support continuity and polish, but the core signal workflow stays quiet and highly readable."
             />
             <WhyCard
-              title="Backend-ready"
-              copy="Supabase auth/data, Paystack billing, Telegram fanout, and health monitoring are already modeled into the shell."
+              title="Backend-aware from day one"
+              copy="Supabase auth and data, Telegram fanout, billing hooks, and health checks are reflected directly in the product shell."
             />
           </div>
         </section>
@@ -154,11 +169,12 @@ export default async function Home() {
       <Reveal delay={0.2}>
         <section className="space-y-6">
           <SectionHeading
-            eyebrow="Pricing"
-            title="Monetization is built into the platform, not bolted on."
-            description="The pricing stack routes through a billing endpoint that can operate in demo mode now and switch to live Paystack credentials when you are ready."
+            eyebrow="Membership"
+            title="Subscription access aligned to signal quality and operational trust."
+            description="The pricing flow is already modeled for Paystack so we can move from demo-grade checkout to live subscriptions without reshaping the product later."
           />
           <PricingCards plans={plans} />
+          <RiskDisclaimer />
         </section>
       </Reveal>
     </div>

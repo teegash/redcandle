@@ -16,7 +16,7 @@ export function Logo() {
       </span>
       <span className="flex flex-col">
         <span className="brand-kicker">RedCandle</span>
-        <span className="metal-text text-sm font-semibold">Signal Atelier</span>
+        <span className="metal-text text-sm font-semibold">Market Intelligence Desk</span>
       </span>
     </Link>
   );

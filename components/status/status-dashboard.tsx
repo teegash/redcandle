@@ -46,6 +46,13 @@ export function StatusDashboard({ health }: StatusDashboardProps) {
           {allOperational
             ? "We're not aware of any issues affecting our systems."
             : "One or more systems show degradation. Check the timelines below for detail."}
+          {latest ? (
+            <div className="mt-4 grid gap-3 text-sm sm:grid-cols-3">
+              <SummaryMetric label="API latency" value={`${latest.api_latency_ms} ms`} />
+              <SummaryMetric label="Error posture" value={`${latest.error_rate.toFixed(1)}%`} />
+              <SummaryMetric label="Checks retained" value={`${timeline.length}`} />
+            </div>
+          ) : null}
         </div>
       </section>
 
@@ -100,6 +107,15 @@ export function StatusDashboard({ health }: StatusDashboardProps) {
           })}
         </div>
       </section>
+    </div>
+  );
+}
+
+function SummaryMetric({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="rounded-2xl border border-slate-200 bg-white px-4 py-3">
+      <div className="text-xs uppercase tracking-[0.16em] text-slate-400">{label}</div>
+      <div className="mt-2 font-medium text-slate-900">{value}</div>
     </div>
   );
 }

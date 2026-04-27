@@ -15,8 +15,8 @@ export default async function PricingPage() {
       <Reveal>
         <SectionHeading
           eyebrow="Membership"
-          title="Subscription access that matches the product quality."
-          description="The billing route is wired for Paystack and already supports a safe demo fallback, so the product can be polished before live credentials are dropped in."
+          title="Subscription access structured for serious signal subscribers."
+          description="Plans are positioned around signal visibility, verified analytics, and operational trust. The billing layer is already modeled for Paystack and can move from demo to live credentials without reshaping the product."
         />
       </Reveal>
       <Reveal delay={0.08}>

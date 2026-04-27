@@ -23,6 +23,10 @@ export default async function AccountPage() {
             {profile.display_name}
           </h1>
           <p className="mt-3 text-slate-400">{profile.email}</p>
+          <p className="mt-3 max-w-2xl text-sm leading-7 text-slate-500">
+            Membership state, environment readiness, and billing posture are shown here so the
+            account area feels operationally clear rather than purely decorative.
+          </p>
           <div className="mt-6 flex flex-wrap gap-3">
             <StatusPill tone="positive">{subscription.plan.toUpperCase()} active</StatusPill>
             <StatusPill tone={status.environment === "live" ? "positive" : "warning"}>

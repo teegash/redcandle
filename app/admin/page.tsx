@@ -25,7 +25,7 @@ export default async function AdminPage() {
         <section className="glass-panel rounded-[2rem] p-8">
           <p className="eyebrow">Admin Desk</p>
           <h1 className="mt-4 text-4xl font-semibold tracking-[-0.05em] text-white">
-            Publish, monitor, and monetize from one control surface.
+            Publish, validate, and monitor the signal operation from one control surface.
           </h1>
           <div className="mt-6 flex flex-wrap gap-3">
             <StatusPill tone={status.integrations.telegram ? "positive" : "warning"}>

@@ -35,23 +35,47 @@ let signalStore: Signal[] = structuredClone(seedSignals);
 let healthStore: AppHealthLog[] = structuredClone(healthLogs);
 const useDemoData = !integrationStatus.supabase;
 
+function shouldFallbackToDemo(error: unknown) {
+  const message =
+    error instanceof Error
+      ? error.message
+      : typeof error === "object" && error !== null && "message" in error
+        ? String(error.message)
+        : String(error);
+
+  return (
+    message.includes("Invalid API key") ||
+    message.includes("JWT") ||
+    message.includes("fetch failed") ||
+    message.includes("network")
+  );
+}
+
 export async function listSignals() {
   if (useDemoData) {
     return [...signalStore].sort((a, b) => b.created_at.localeCompare(a.created_at));
   }
 
-  const supabase = await getSupabaseServerClient();
-  if (!supabase) return [];
+  try {
+    const supabase = await getSupabaseServerClient();
+    if (!supabase) return [];
 
-  const { data, error } = await supabase.from("signals").select("*").order("created_at", {
-    ascending: false,
-  });
+    const { data, error } = await supabase.from("signals").select("*").order("created_at", {
+      ascending: false,
+    });
 
-  if (error) {
+    if (error) {
+      throw error;
+    }
+
+    return (data ?? []) as Signal[];
+  } catch (error) {
+    if (shouldFallbackToDemo(error)) {
+      return [...signalStore].sort((a, b) => b.created_at.localeCompare(a.created_at));
+    }
+
     throw error;
   }
-
-  return (data ?? []) as Signal[];
 }
 
 export async function getSignalBySlug(slug: string) {
@@ -60,20 +84,29 @@ export async function getSignalBySlug(slug: string) {
     return signals.find((signal) => signal.slug === slug) ?? null;
   }
 
-  const supabase = await getSupabaseServerClient();
-  if (!supabase) return null;
+  try {
+    const supabase = await getSupabaseServerClient();
+    if (!supabase) return null;
 
-  const { data, error } = await supabase
-    .from("signals")
-    .select("*")
-    .eq("slug", slug)
-    .maybeSingle();
+    const { data, error } = await supabase
+      .from("signals")
+      .select("*")
+      .eq("slug", slug)
+      .maybeSingle();
 
-  if (error) {
+    if (error) {
+      throw error;
+    }
+
+    return (data as Signal | null) ?? null;
+  } catch (error) {
+    if (shouldFallbackToDemo(error)) {
+      const signals = await listSignals();
+      return signals.find((signal) => signal.slug === slug) ?? null;
+    }
+
     throw error;
   }
-
-  return (data as Signal | null) ?? null;
 }
 
 export async function getAnalytics(symbol?: string) {
@@ -90,19 +123,27 @@ export async function getDailyMetrics() {
     return metricsDaily;
   }
 
-  const supabase = await getSupabaseServerClient();
-  if (!supabase) return [];
+  try {
+    const supabase = await getSupabaseServerClient();
+    if (!supabase) return [];
 
-  const { data, error } = await supabase
-    .from("metrics_daily")
-    .select("*")
-    .order("date", { ascending: false });
+    const { data, error } = await supabase
+      .from("metrics_daily")
+      .select("*")
+      .order("date", { ascending: false });
 
-  if (error) {
+    if (error) {
+      throw error;
+    }
+
+    return data ?? [];
+  } catch (error) {
+    if (shouldFallbackToDemo(error)) {
+      return metricsDaily;
+    }
+
     throw error;
   }
-
-  return data ?? [];
 }
 
 export async function getHealthLogs(options?: { publicView?: boolean }) {
@@ -110,25 +151,33 @@ export async function getHealthLogs(options?: { publicView?: boolean }) {
     return [...healthStore].sort((a, b) => b.checked_at.localeCompare(a.checked_at));
   }
 
-  const client = options?.publicView
-    ? getSupabaseAdminClient()
-    : await getSupabaseServerClient();
+  try {
+    const client = options?.publicView
+      ? getSupabaseAdminClient()
+      : await getSupabaseServerClient();
 
-  if (!client) {
-    return [];
-  }
+    if (!client) {
+      return [];
+    }
 
-  const { data, error } = await client
-    .from("app_health_logs")
-    .select("*")
-    .order("checked_at", { ascending: false })
-    .limit(90);
+    const { data, error } = await client
+      .from("app_health_logs")
+      .select("*")
+      .order("checked_at", { ascending: false })
+      .limit(90);
 
-  if (error) {
+    if (error) {
+      throw error;
+    }
+
+    return (data ?? []) as AppHealthLog[];
+  } catch (error) {
+    if (shouldFallbackToDemo(error)) {
+      return [...healthStore].sort((a, b) => b.checked_at.localeCompare(a.checked_at));
+    }
+
     throw error;
   }
-
-  return (data ?? []) as AppHealthLog[];
 }
 
 export async function getProfile(): Promise<Profile> {
@@ -136,7 +185,15 @@ export async function getProfile(): Promise<Profile> {
     return demoProfile;
   }
 
-  return getCurrentProfile();
+  try {
+    return await getCurrentProfile();
+  } catch (error) {
+    if (shouldFallbackToDemo(error)) {
+      return demoProfile;
+    }
+
+    throw error;
+  }
 }
 
 export async function getSubscription(): Promise<Subscription> {
@@ -144,35 +201,43 @@ export async function getSubscription(): Promise<Subscription> {
     return demoSubscription;
   }
 
-  const profile = await getCurrentProfile();
-  const supabase = await getSupabaseServerClient();
+  try {
+    const profile = await getCurrentProfile();
+    const supabase = await getSupabaseServerClient();
 
-  if (!supabase) {
-    throw new Error("Supabase client is unavailable.");
-  }
+    if (!supabase) {
+      throw new Error("Supabase client is unavailable.");
+    }
 
-  const { data, error } = await supabase
-    .from("subscriptions")
-    .select("*")
-    .eq("user_id", profile.id)
-    .eq("active", true)
-    .order("created_at", { ascending: false })
-    .maybeSingle();
+    const { data, error } = await supabase
+      .from("subscriptions")
+      .select("*")
+      .eq("user_id", profile.id)
+      .eq("active", true)
+      .order("created_at", { ascending: false })
+      .maybeSingle();
 
-  if (error && error.code !== "PGRST116") {
+    if (error && error.code !== "PGRST116") {
+      throw error;
+    }
+
+    if (!data) {
+      return {
+        ...demoSubscription,
+        active: false,
+        user_id: profile.id,
+        payment_reference: "pending",
+      };
+    }
+
+    return data as Subscription;
+  } catch (error) {
+    if (shouldFallbackToDemo(error)) {
+      return demoSubscription;
+    }
+
     throw error;
   }
-
-  if (!data) {
-    return {
-      ...demoSubscription,
-      active: false,
-      user_id: profile.id,
-      payment_reference: "pending",
-    };
-  }
-
-  return data as Subscription;
 }
 
 export async function getPricingPlans(): Promise<Plan[]> {

@@ -14,7 +14,7 @@ const defaults = {
   entry_price: "1.0842",
   take_profit: "1.0899",
   stop_loss: "1.0813",
-  notes: "Momentum continuation after displacement and liquidity sweep.",
+  notes: "London liquidity sweep followed by bullish structure shift and reclaim of intraday support.",
 };
 
 export function SignalForm() {
@@ -106,7 +106,7 @@ export function SignalForm() {
           </h2>
           <p className="mt-3 text-sm text-slate-400">
             The form enforces pip-safe trade structure, computes R:R in real time, and routes
-            Telegram delivery from the server.
+            Telegram delivery from the server after validation.
           </p>
         </div>
 
@@ -224,7 +224,7 @@ export function SignalForm() {
       <aside className="glass-panel rounded-[1.75rem] p-6">
         <p className="eyebrow">Live Preview</p>
         <h3 className="mt-4 text-2xl font-semibold tracking-[-0.04em] text-white">
-          Telegram-ready snapshot
+          Member and Telegram snapshot
         </h3>
         <div className="mt-6 space-y-3 rounded-[1.5rem] border border-slate-300/10 bg-slate-950/45 p-5 text-sm">
           <div className="flex items-center justify-between">
